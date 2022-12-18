@@ -11,10 +11,13 @@ player.on('timeupdate', function(currentTime) {
         percent: 0.049
         seconds: 3.034
     }
+    
     localStorage.setItem(TIME, JSON.stringify(currentTime));
     console.log(currentTime.seconds)
-    console.log(timeMoment)    
+       
 });
+
+// var throttled = _.throttle(renewToken, 1000, {});
 
 const savedTime = JSON.parse(localStorage.getItem(TIME));
 
