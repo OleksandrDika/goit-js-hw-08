@@ -1,58 +1,30 @@
+import throttle from "lodash.throttle";
 const form = document.querySelector(".feedback-form");
-
-
-form.addEventListener("input", formsymbols);
-
+form.addEventListener("input", throttle(onInput, 300));
 form.addEventListener("submit", formSubmit);
 
 
 const SYMBOLS = "feedback-form-state";
-const inputObject = {
-  email: " ",
-  message: " "
+
+const userData = JSON.parse(localStorage.getItem(SYMBOLS));
+
+if (userData) {
+  form.email.value = userData.email || "";
+  form.message.value = userData.message || "";
 }
 
-function formsymbols (elem) {
+function onInput (event) {
+  const{name, value} = event.target;
+  const userData = JSON.parse(localStorage.getItem(SYMBOLS)) || {};
+  userData[name] = value;
+  localStorage.setItem(SYMBOLS, JSON.stringify(userData))
   
-  if (elem.target.name === "email") {
-    
-    inputObject.email += elem.data
-  } else if(elem.target.name === "message") {
-    
-    inputObject.message += elem.data
-  }
-   localStorage.setItem(SYMBOLS, JSON.stringify(inputObject));
-  
-  console.log(inputObject) 
-  console.log(form[0].value)
 }
-const savedInput = JSON.parse(localStorage.getItem(SYMBOLS));
-// console.log(savedInput);
-// console.log(savedInput.email);
-
-
-(function(){
-  try {
-    if (!savedInput.email == " ") {
-      form[0].value = savedInput.email
-    } 
-  } catch (error) {
-    console.log("localstorage")
-  }
-
-  try {
-    if (!savedInput.message == " ") {
-      form[1].value = savedInput.message
-    } 
-  } catch (error) {
-    console.log("localstorage")
-  } 
-     
-})();
 
 function formSubmit (e) {
-  
-  console.log(savedInput)
+  e.preventDefault();
+  const{email:{value: email}, message:{value:message}} = e.target.elements;
+  console.log({email, message})
   localStorage.removeItem(SYMBOLS);
   form.reset()
 };
